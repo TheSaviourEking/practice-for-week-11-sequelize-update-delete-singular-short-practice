@@ -12,7 +12,7 @@ const { Puppy } = require('./db/models');
 
 // Index of all puppies - DO NOT MODIFY
 app.get('/puppies', async (req, res, next) => {
-    const allPuppies = await Puppy.findAll({order: [['name', 'ASC']]});
+    const allPuppies = await Puppy.findAll({ order: [['name', 'ASC']] });
 
     res.json(allPuppies);
 });
@@ -21,6 +21,18 @@ app.get('/puppies', async (req, res, next) => {
 // STEP 1: Update a puppy by id
 app.put('/puppies/:puppyId', async (req, res, next) => {
     // Your code here
+    const { ageYrs, weightLbs, microchipped } = req.body;
+    const puppy = await Puppy.findByPk(req.params.puppyId);
+    puppy.set({
+        ageYrs: ageYrs || puppy.ageYrs,
+        weightLbs: weightLbs || puppy.weightLbs,
+        microchipped: microchipped || puppy.microchipped
+    })
+    await puppy.save();
+    res.json({
+        message: `Successfully updated puppy with id ${req.params.puppyId}`,
+        puppy
+    })
 })
 
 
